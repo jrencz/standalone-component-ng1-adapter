@@ -58,10 +58,9 @@ var config = {
         loaders: [
             {
                 test: /(\.js)$/,
-                loader: 'babel',
-                query: {
+                loader: `ng-annotate!babel?${ JSON.stringify({
                   presets: babelPresets,
-                },
+                }) }`,
                 exclude: /(node_modules|bower_components)/
             },
             {

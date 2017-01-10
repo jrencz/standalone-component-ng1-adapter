@@ -135,6 +135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var TestStandaloneComponentController = function () {
+	  TestStandaloneComponentController.$inject = ["$element", "$timeout", "$rootScope"];
 	  function TestStandaloneComponentController($element, $timeout, $rootScope) {
 	    'ngInject';
 	
