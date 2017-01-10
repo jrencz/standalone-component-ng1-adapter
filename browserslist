@@ -1,0 +1,12 @@
+> 0.5%
+
+# Exceptions:
+#
+# Always describe exceptions!
+#
+# Always measure how much more the the compiled stylesheet weights
+# when exception is added (you may use `du` for that) and check if
+# exception is justified
+#
+# Always run `browserslist` cli tool (npm i -g browserslist-cli) to
+# see if declaration you add results in correct resolution

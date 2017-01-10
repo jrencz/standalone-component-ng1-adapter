@@ -1,0 +1,14 @@
+{
+  "env": {
+    "node": false,
+    "browser": true,
+    "mocha": true,
+    "angular/angular": true,
+    "angular/mocks": true
+  },
+  "plugins": [
+    "mocha",
+    "angular",
+    "chai-expect"
+  ]
+}

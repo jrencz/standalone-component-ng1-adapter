@@ -1,0 +1,9 @@
+test-standalone-component-adapter {
+  display: block;
+
+  // this is how our component adapter looks in every application
+  // which uses common adapter. If some style belongs to the component,
+  // not the application it's used in and not the adapter it's used through
+  // then styles should be moved to that component (i.e. to the external
+  // project or the stylesheet project)
+}

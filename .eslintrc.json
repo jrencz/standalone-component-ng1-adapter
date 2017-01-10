@@ -1,0 +1,18 @@
+{
+  "ecmaFeatures": {
+    "globalReturn": true,
+    "modules": true
+  },
+
+  "env": {
+    "browser": false,
+    "es6": true,
+    "node": true
+  },
+
+  "parser": "babel-eslint",
+
+  "rules": {
+    "no-undef": ["error"]
+  }
+}
