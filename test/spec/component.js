@@ -1,16 +1,20 @@
 import AdapterModule from '../../src/';
 
-import {expect} from 'chai';
 import {mock} from 'angular';
+
+const {
+  module,
+  inject
+} = mock;
 
 describe(`Module: ${ AdapterModule }`, () => {
   let $compile;
   let $rootScope;
 
-  beforeEach(mock.module(AdapterModule));
+  beforeEach(module(AdapterModule));
 
   describe('Adapter component', () => {
-    beforeEach(mock.inject((
+    beforeEach(inject((
       _$compile_,
       _$rootScope_
     ) => {
@@ -25,7 +29,7 @@ describe(`Module: ${ AdapterModule }`, () => {
 
       $rootScope.$digest();
 
-      expect(element.html()).to.contain('Content from standalone component');
+      expect(element.html()).toContain('Content from standalone component');
     });
 
     describe('when name changes', () => {

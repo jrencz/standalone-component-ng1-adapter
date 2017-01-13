@@ -3,15 +3,6 @@ import Controller from '../../src/controller';
 import TestStandaloneComponent from 'test-standalone-component';
 
 import {
-  expect
-} from 'chai';
-
-import {
-  assert,
-  spy,
-} from 'sinon';
-
-import {
   mock,
   element
 } from 'angular';
@@ -20,6 +11,18 @@ const {
   module,
   inject
 } = mock;
+
+const {
+  any,
+  createSpy,
+} = jasmine;
+
+const {
+  spyOn,
+  beforeEach,
+  describe,
+  it,
+} = window;
 
 describe(`Module: ${ AdapterModule }`, () => {
   let $componentController;
@@ -53,7 +56,7 @@ describe(`Module: ${ AdapterModule }`, () => {
 
       expect(
         wrappedComponentController
-      ).to.be.an.instanceOf(TestStandaloneComponent);
+      ).toEqual(any(TestStandaloneComponent));
     });
 
     describe('when adapter is initialized', () => {
@@ -64,11 +67,13 @@ describe(`Module: ${ AdapterModule }`, () => {
       });
 
       it('should render wrapped controller', () => {
-        spy(ctrl.wrappedComponentController, 'render');
+        spyOn(ctrl.wrappedComponentController, 'render');
 
         ctrl.$onInit();
 
-        assert.calledOnce(ctrl.wrappedComponentController.render);
+        expect(
+          ctrl.wrappedComponentController.render
+        ).toHaveBeenCalledOnce()
       });
     });
 
@@ -89,21 +94,21 @@ describe(`Module: ${ AdapterModule }`, () => {
         it('should ignore initial value', () => {
           ctrl.$onInit();
 
-          expect(ctrl.wrappedComponentController.name).not.to.be.a(name);
+          expect(ctrl.wrappedComponentController.name).not.toBe(name);
         });
 
         it('should use custom value', () => {
           ctrl.$onInit();
 
           expect(
-            ctrl.wrappedComponentController.name.startsWith('Initial name')
-          ).to.be.ok;
+            ctrl.wrappedComponentController.name
+          ).toStartWith('Initial name');
         });
       });
 
       describe('when value changes', () => {
         beforeEach(() => {
-          spy(ctrl.wrappedComponentController, 'changeName');
+          spyOn(ctrl.wrappedComponentController, 'changeName');
         });
 
         describe('first time', () => {
@@ -118,9 +123,9 @@ describe(`Module: ${ AdapterModule }`, () => {
               }
             });
 
-            assert.notCalled(
+            expect(
               ctrl.wrappedComponentController.changeName
-            );
+            ).not.toHaveBeenCalled();
           });
         });
 
@@ -138,9 +143,12 @@ describe(`Module: ${ AdapterModule }`, () => {
               }
             });
 
-            assert.calledOnce(ctrl.wrappedComponentController.changeName);
-            assert.calledWith(
-              ctrl.wrappedComponentController.changeName, currentValue);
+            expect(
+              ctrl.wrappedComponentController.changeName
+            ).toHaveBeenCalledOnce();
+            expect(
+              ctrl.wrappedComponentController.changeName
+            ).toHaveBeenCalledOnceWith(currentValue);
           });
         })
       });
@@ -165,14 +173,14 @@ describe(`Module: ${ AdapterModule }`, () => {
 
           expect(
             ctrl.wrappedComponentController.isRTL
-          ).to.be.equal(isRightToLeft);
+          ).toEqual(isRightToLeft);
         });
       });
 
       describe('when value changes', () => {
 
         beforeEach(() => {
-          spy(ctrl.wrappedComponentController, 'setRTL');
+          spyOn(ctrl.wrappedComponentController, 'setRTL');
         });
 
         describe('first time', () => {
@@ -187,9 +195,9 @@ describe(`Module: ${ AdapterModule }`, () => {
               }
             });
 
-            assert.notCalled(
+            expect(
               ctrl.wrappedComponentController.setRTL
-            );
+            ).not.toHaveBeenCalled();
           });
         });
 
@@ -207,9 +215,12 @@ describe(`Module: ${ AdapterModule }`, () => {
               }
             });
 
-            assert.calledOnce(ctrl.wrappedComponentController.setRTL);
-            assert.calledWith(
-              ctrl.wrappedComponentController.setRTL, currentValue);
+            expect(
+              ctrl.wrappedComponentController.setRTL
+            ).toHaveBeenCalledOnce();
+            expect(
+              ctrl.wrappedComponentController.setRTL
+            ).toHaveBeenCalledOnceWith(currentValue);
           });
         })
       });
@@ -221,7 +232,7 @@ describe(`Module: ${ AdapterModule }`, () => {
 
       describe('when value is function', () => {
         beforeEach(() => {
-          onClicked = spy();
+          onClicked = createSpy();
           ctrl = createCtrl({
             bindings: {
               onClicked,
@@ -234,7 +245,9 @@ describe(`Module: ${ AdapterModule }`, () => {
           it('should be called immediately', () => {
             ctrl.wrappedComponentController.node.click();
 
-            assert.calledOnce(onClicked);
+            expect(
+              onClicked
+            ).toHaveBeenCalledOnce();
           });
         });
       });
@@ -254,7 +267,7 @@ describe(`Module: ${ AdapterModule }`, () => {
           it('should not throw', () => {
             expect(() => {
               ctrl.wrappedComponentController.node.click();
-            }).not.to.throw();
+            }).not.toThrow();
           });
         });
       });
@@ -263,8 +276,8 @@ describe(`Module: ${ AdapterModule }`, () => {
         let updatedOnClicked;
 
         beforeEach(() => {
-          onClicked = spy();
-          updatedOnClicked = spy();
+          onClicked = createSpy();
+          updatedOnClicked = createSpy();
 
           ctrl = createCtrl({
             bindings: {
@@ -277,8 +290,12 @@ describe(`Module: ${ AdapterModule }`, () => {
         it('should call the current value (function)', () => {
           ctrl.wrappedComponentController.node.click();
 
-          assert.calledOnce(onClicked);
-          assert.notCalled(updatedOnClicked);
+          expect(
+            onClicked
+          ).toHaveBeenCalledOnce();
+          expect(
+            updatedOnClicked
+          ).not.toHaveBeenCalled();
 
           ctrl.$onChanges({
             onClicked: {
@@ -291,8 +308,12 @@ describe(`Module: ${ AdapterModule }`, () => {
 
           ctrl.wrappedComponentController.node.click();
 
-          assert.calledOnce(onClicked);
-          assert.calledOnce(updatedOnClicked);
+          expect(
+            onClicked
+          ).toHaveBeenCalledOnce();
+          expect(
+            updatedOnClicked
+          ).toHaveBeenCalledOnce();
         });
       });
     });
@@ -302,7 +323,7 @@ describe(`Module: ${ AdapterModule }`, () => {
       let ctrl;
 
       beforeEach(() => {
-        onClicked = spy();
+        onClicked = createSpy();
       });
 
       describe('when set to true', () => {
@@ -324,15 +345,21 @@ describe(`Module: ${ AdapterModule }`, () => {
         it('should delay calling `onClicked` by 1s', () => {
           ctrl.wrappedComponentController.node.click();
 
-          assert.notCalled(onClicked);
+          expect(
+            onClicked
+          ).not.toHaveBeenCalled();
 
           $timeout.flush(999);
 
-          assert.notCalled(onClicked);
+          expect(
+            onClicked
+          ).not.toHaveBeenCalled();
 
           $timeout.flush(1);
 
-          assert.calledOnce(onClicked);
+          expect(
+            onClicked
+          ).toHaveBeenCalledOnce();
         });
       });
 
@@ -352,7 +379,9 @@ describe(`Module: ${ AdapterModule }`, () => {
         it('should not delay calling `onClicked`', () => {
           ctrl.wrappedComponentController.node.click();
 
-          assert.calledOnce(onClicked);
+          expect(
+            onClicked
+          ).toHaveBeenCalledOnce();
         });
       });
     });

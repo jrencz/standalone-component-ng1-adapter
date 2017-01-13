@@ -2,13 +2,12 @@
   "env": {
     "node": false,
     "browser": true,
-    "mocha": true,
+    "jasmine": true,
     "angular/angular": true,
     "angular/mocks": true
   },
   "plugins": [
-    "mocha",
-    "angular",
-    "chai-expect"
+    "jasmine",
+    "angular"
   ]
 }

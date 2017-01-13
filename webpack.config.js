@@ -27,6 +27,17 @@ const suffix = bundled ?
 
 const babelPresets = [];
 const plugins = [];
+const loaders = [
+  {
+    test: /(\.js)$/,
+    loader: `ng-annotate!babel?${ JSON.stringify({
+      presets: babelPresets,
+    }) }`,
+    exclude: /(node_modules|bower_components)/
+  },
+  { test: /\.(scss|sass)$/, loader: 'style!css?importLoaders=1&camelCase&modules!postcss!sass' },
+  { test: /\.css$/, loader: 'style!css?importLoaders=1&camelCase&modules!postcss' }
+];
 let outputFile;
 
 if (env === 'min') {
@@ -34,6 +45,13 @@ if (env === 'min') {
     plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
     outputFile = `${ baseName }${ suffix }.min${ ext }`;
 } else {
+    if (env === 'dev') {
+      loaders.push(  {
+        test: /(\.js)$/,
+        loader: "eslint-loader",
+        exclude: /node_modules/
+      });
+    }
     outputFile = `${ baseName }${ suffix }${ ext }`;
 }
 
@@ -55,22 +73,7 @@ var config = {
         umdNamedDefine: true
     },
     module: {
-        loaders: [
-            {
-                test: /(\.js)$/,
-                loader: `ng-annotate!babel?${ JSON.stringify({
-                  presets: babelPresets,
-                }) }`,
-                exclude: /(node_modules|bower_components)/
-            },
-            {
-                test: /(\.js)$/,
-                loader: "eslint-loader",
-                exclude: /node_modules/
-            },
-            { test: /\.(scss|sass)$/, loader: 'style!css?importLoaders=1&camelCase&modules!postcss!sass' },
-            { test: /\.css$/, loader: 'style!css?importLoaders=1&camelCase&modules!postcss' }
-        ]
+        loaders,
     },
     sassLoader: sassConfig,
     resolve: {

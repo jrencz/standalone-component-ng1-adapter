@@ -1,53 +1,47 @@
-const {module: {loaders}} = require('./webpack.config');
+const webpackConfig = require('./webpack.config');
+
+const suite = './spec.bundle.js';
 
 module.exports = function (config) {
-  config.set({
+  const configuration = {
     // base path used to resolve all patterns
-    basePath: 'test/',
+    basePath: '',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: [
+      'jasmine',
+      'jasmine-matchers',
+    ],
 
     // list of files/patterns to load in the browser
-    files: [
-      '../node_modules/angular/angular.js',
-      '../node_modules/angular-mocks/angular-mocks.js',
-      { pattern: './spec/**/*.js', watched: true }
-    ],
+    files: [{ pattern: suite, watched: true }],
 
     // files to exclude
     exclude: [],
 
-    plugins: [
-      require("karma-chai"),
-      require("karma-longest-reporter"),
-      require("karma-chrome-launcher"),
-      require("karma-mocha"),
-      require("karma-mocha-reporter"),
-      require("karma-sourcemap-loader"),
-      require("karma-webpack")
-    ],
-
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: { './spec/**/*.js': ['webpack', 'sourcemap'] },
+    preprocessors: {
+      [suite]: ['webpack', 'sourcemap']
+    },
 
     webpack: {
       devtool: 'inline-source-map',
-      module: {
-        loaders,
-        noParse: [
-          // See: https://github.com/airbnb/enzyme/issues/47#issuecomment-162529926
-          /node_modules\/sinon\//,
-        ]
-      },
-      resolve: {
-        alias: {
-          // See: https://github.com/airbnb/enzyme/issues/47#issuecomment-162529926
-          sinon: 'sinon/pkg/sinon'
-        }
-      },
+      module: Object.assign({}, webpackConfig.module, {
+        preLoaders: [
+          {
+            test: /(\.js)$/,
+            include: [/src/],
+            exclude: [/dist/, /node_modules/],
+            loader: 'babel-istanbul',
+            query: {
+              cacheDirectory: true,
+            },
+          },
+          ...(webpackConfig.module.preLoaders || []),
+        ],
+      }),
     },
 
     webpackServer: {
@@ -60,9 +54,17 @@ module.exports = function (config) {
 
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: [
-      'mocha',
       'longest',
+      'progress',
+      'coverage',
     ],
+
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
 
     // web server port
     port: 9876,
@@ -83,5 +85,11 @@ module.exports = function (config) {
 
     // if true, Karma runs tests once and exits
     singleRun: false
-  });
+  };
+
+  if(process.env.TRAVIS) {
+    configuration.browsers = ['Chrome_travis_ci'];
+  }
+
+  config.set(configuration);
 };
