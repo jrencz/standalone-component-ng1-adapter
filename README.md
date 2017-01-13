@@ -1,1 +1,1 @@
-# External component Angular1 adapter starter
+# External component Angular1 adapter starter [![Build Status](https://api.travis-ci.org/jrencz/standalone-component-ng1-adapter.svg?branch=master)](https://travis-ci.org/jrencz/standalone-component-ng1-adapter)
